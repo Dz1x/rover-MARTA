@@ -57,10 +57,18 @@ void loop() {
  
  
  
- servo1.write(90);
- servo2.write(90);
+  for(i=0;i!=255;i++){
+    servo1.write(map(i,0,255,0,180));
+    servo2.write(map(i,0,255,0,180));
+   }
 
-   
+   for(i=255;i!=0;i++){
+
+    servo1.write(map(i,0,255,0,180));
+    servo2.write(map(i,0,255,0,180));
+   }
+
+  
    
   myMotor->setSpeed(200);
   myMotor2->setSpeed(200);
@@ -72,8 +80,7 @@ void loop() {
   myMotor3->run(FORWARD);
   myMotor4->run(FORWARD);
   delay(1250);
-  servo1.write( 110);
-    servo2.write(110);
+  
   myMotor->setSpeed(0);
   myMotor2->setSpeed(0);
   myMotor3->setSpeed(0);
@@ -83,8 +90,8 @@ void loop() {
   myMotor3->run(RELEASE);
   myMotor4->run(RELEASE);
  delay(1250);
- servo1.write( 90);
-  servo2.write(90);
+ 
+ 
   myMotor->setSpeed(200);
   myMotor2->setSpeed(200);
   myMotor3->setSpeed(200);
@@ -96,8 +103,7 @@ void loop() {
   myMotor4->run(BACKWARD);
   
    delay(1250);
-   servo1.write(110);
-    servo2.write(110);
+   
   
 
   myMotor->run(RELEASE);
