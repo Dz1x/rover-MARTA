@@ -1,130 +1,240 @@
+// Adafruit Motor shield library
+// copyright Adafruit Industries LLC, 2009
+// this code is public domain, enjoy!
 
-
-//librarie
- 
 #include <Wire.h>
 #include <Servo.h> 
 #include <Adafruit_MotorShield.h>
 
-// Déclare le motor shield 
+const int bluetooth=2;
+ int vitesse;
+int state;
 
 Adafruit_MotorShield AFMS = Adafruit_MotorShield(); 
 
-// Déclaration des moteur le chiffre corresponds au port utilié sur le moteur shield. 
+Adafruit_DCMotor *motorFR = AFMS.getMotor(1);
+Adafruit_DCMotor *motorFL = AFMS.getMotor(2);
+Adafruit_DCMotor *motorRR = AFMS.getMotor(3);
+Adafruit_DCMotor *motorRL = AFMS.getMotor(4);
+// DC hobby servo
+Servo servoFR;
+Servo servoFL;
+Servo servoRR;
+Servo servoRL;
 
-Adafruit_DCMotor *myMotor = AFMS.getMotor(1);
-Adafruit_DCMotor *myMotor2 = AFMS.getMotor(2);
-Adafruit_DCMotor *myMotor3 = AFMS.getMotor(3);
-Adafruit_DCMotor *myMotor4 = AFMS.getMotor(4);
 
-int i=0;
-// Déclaration ( type puis le nom ) 
-Servo servo1;
-Servo servo2;
-Servo servo3;
 
-//Phase initial 
 void setup() {
   
+  pinMode(bluetooth,INPUT);
+  pinMode(5,OUTPUT);
+  pinMode(6,OUTPUT);
   Serial.begin(9600);           
-  
-
-  
-
+  Serial.println("Motor test!");
   AFMS.begin();  
-  
-  
-  // servo sur pin pwm, elles sont reliées. 
- 
- 
-  servo1.attach(10);
-  servo2.attach(9);
-  servo3.attach(4);
+  // turn on servo
+  servoFR.attach(9);
+  servoFL.attach(10);
+  servoRR.attach(6);
+  servoRL.attach(5);
+   motorFR->setSpeed(150);
+  motorFL->setSpeed(150);
+  motorRR->setSpeed(150);
+  motorRL->setSpeed(150);
    
-//  Set the speed (max 250) 
- 
-  myMotor->setSpeed(100);
-  myMotor2->setSpeed(100);
-  myMotor3->setSpeed(100);
-  myMotor4->setSpeed(100);
   
-
   
-   
+  
 }
 
 
+
+
 void loop() {
- 
- 
- 
- 
- 
-  for(i=0;i!=255;i++){
-    servo1.write(map(i,0,255,0,180));
-    servo2.write(map(i,0,255,0,180));
-   }
 
-   for(i=255;i!=0;i++){
+  if (digitalRead(bluetooth)==LOW){state='S';}
+  
+ if(Serial.available()>0){
 
-    servo1.write(map(i,0,255,0,180));
-    servo2.write(map(i,0,255,0,180));
-   }
-
-  // set the speed
+   state=Serial.read();
    
-  myMotor->setSpeed(200);
-  myMotor2->setSpeed(200);
-  myMotor3->setSpeed(200);
-  myMotor4->setSpeed(200);
-  
- // diresction 
-   myMotor->run(FORWARD);
-  myMotor2->run(FORWARD);
-  myMotor3->run(FORWARD);
-  myMotor4->run(FORWARD);
-  delay(1250);
-  
- //Imporetant de mettre la vitesse a 0 avant l'arret et un delay 
+
  
-  myMotor->setSpeed(0);
-  myMotor2->setSpeed(0);
-  myMotor3->setSpeed(0);
-  myMotor4->setSpeed(0);
-   myMotor->run(RELEASE);
-  myMotor2->run(RELEASE);
-  myMotor3->run(RELEASE);
-  myMotor4->run(RELEASE);
- delay(1250);
- 
- 
- // en arrière
-  myMotor->setSpeed(200);
-  myMotor2->setSpeed(200);
-  myMotor3->setSpeed(200);
-  myMotor4->setSpeed(200);
   
-  myMotor->run(BACKWARD);
-  myMotor2->run(BACKWARD);
-  myMotor3->run(BACKWARD);
-  myMotor4->run(BACKWARD);
+Serial.println(state);
+
+if (state == '0'){
+      vitesse=0;}
+    else if (state == '1'){
+      vitesse=100;}
+    else if (state == '2'){
+      vitesse=180;}
+    else if (state == '3'){
+      vitesse=200;}
+    else if (state == '4'){
+      vitesse=255;}
+
+
+
+switch (state){
+  case'F':
+
+servoFR.write(90);
+servoFL.write(90);
+servoRR.write(90);
+servoRL.write(90);
   
-   delay(1250);
+    
+  motorFR->run(FORWARD);
+  motorFL->run(FORWARD);
+  motorRR->run(FORWARD);
+  motorRL->run(FORWARD);
+    
+    
+    
    
+    break;
+case'B':
+
+   servoFR.write(90);
+   servoFL.write(90);
+   servoRR.write(90);
+   servoRL.write(90);
+    
+  motorFR->run(BACKWARD);
+  motorFL->run(BACKWARD);
+  motorRR->run(BACKWARD);
+  motorRL->run(BACKWARD);
+    
+    
+    
+   
+    break;
+
+
+
+case'I':
+
+
+servoFR.write(120);
+servoFL.write(120);
+
+ motorFR->run(FORWARD);
+ motorFL->run(FORWARD);
+ motorRR->run(FORWARD);
+ motorRL->run(FORWARD);
+
+  
+break;
+
+case 'G':
+
+
+  servoFR.write(60);
+  servoFL.write(60);
+
+ motorFR->run(FORWARD);
+ motorFL->run(FORWARD);
+ motorRR->run(FORWARD);
+ motorRL->run(FORWARD);
+
+
+break;
+
+
+case'R':
+
+
+
+
+servoFR.write(60);
+servoFL.write(120);
+servoRR.write(120);
+servoRL.write(60);
+
+motorFR->run(BACKWARD);
+motorFL->run(FORWARD);
+motorRR->run(BACKWARD);
+motorRL->run(FORWARD);
   
 
-  myMotor->run(RELEASE);
-  myMotor2->run(RELEASE);
-  myMotor3->run(RELEASE);
-  myMotor4->run(RELEASE);
-   delay(1250);
+break;
 
+case'L':
+
+
+
+servoFR.write(60);
+servoFL.write(120);
+servoRR.write(120);
+servoRL.write(60);
+
+motorFR->run(FORWARD);
+motorFL->run(BACKWARD);
+motorRR->run(FORWARD);
+motorRL->run(BACKWARD);
   
 
+break;
+
+
+case'H':
+
+
+
+
+servoRL.write(120);
+servoRR.write(120);
+
+  motorFR->run(BACKWARD);
+  motorFL->run(BACKWARD);
+  motorRR->run(BACKWARD);
+  motorRL->run(BACKWARD);
+
+
+
+break;
+
+
+case'J':
+
+
+
+servoRR.write(60);
+servoRL.write(60);
+
+  motorFR->run(BACKWARD);
+  motorFL->run(BACKWARD);
+  motorRR->run(BACKWARD);
+  motorRL->run(BACKWARD);
+break;
+
+
+
+
+
+
+case'S':
+
+
+servoFR.write(90);
+servoFL.write(90);
+servoRR.write(90);
+servoRL.write(90);
+
+  motorFR->run(RELEASE);
+  motorFL->run(RELEASE);
+  motorRR->run(RELEASE);
+  motorRL->run(RELEASE);
+  
+  
+  break;
+}
+
+
+ }
 
 
 
   
-  
- 
 }
