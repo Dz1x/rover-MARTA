@@ -1,6 +1,4 @@
-// Adafruit Motor shield library
-// copyright Adafruit Industries LLC, 2009
-// this code is public domain, enjoy!
+/*Haroun Khalfi for PolyOrbite education program*/
 
 #include <Wire.h>
 #include <Servo.h> 
